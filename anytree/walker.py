@@ -75,20 +75,14 @@ class Walker(object):
         assert c[0] is start.root
         len_c = len(c)
         # up
-        if start is c[-1]:
-            up = tuple()
-        else:
-            up = tuple(reversed(s[len_c:]))
+        up = tuple() if start is c[-1] else tuple(reversed(s[len_c:]))
         # down
-        if end is c[-1]:
-            down = tuple()
-        else:
-            down = e[len_c:]
+        down = tuple() if end is c[-1] else e[len_c:]
         return up, c[-1], down
 
     @staticmethod
     def __calc_common(s, e):
-        return tuple([si for si, ei in zip(s, e) if si is ei])
+        return tuple(si for si, ei in zip(s, e) if si is ei)
 
 
 class WalkError(RuntimeError):

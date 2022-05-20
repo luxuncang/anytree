@@ -79,9 +79,10 @@ class DictExporter(object):
         data = dictcls(attr_values)
         maxlevel = self.maxlevel
         if maxlevel is None or level < maxlevel:
-            children = [self.__export(child, dictcls, attriter, childiter, level=level + 1)
-                        for child in childiter(node.children)]
-            if children:
+            if children := [
+                self.__export(child, dictcls, attriter, childiter, level=level + 1)
+                for child in childiter(node.children)
+            ]:
                 data['children'] = children
         return data
 

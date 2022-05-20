@@ -189,7 +189,7 @@ SPECIAL_METHODS += [attr for attr in ["__bytes__", "__unicode__", "__dir"] if ha
 
 
 def prevent_access(attr, *args, **kwargs):
-    raise AssertionError("invalid call to " + attr)
+    raise AssertionError(f"invalid call to {attr}")
 
 
 class MyNode(NodeMixin):
@@ -197,8 +197,7 @@ class MyNode(NodeMixin):
     def __new__(cls, *args, **kwargs):
         for attr in SPECIAL_METHODS:
             setattr(cls, attr, functools.partial(prevent_access, attr))
-        instance = super(NodeMixin, cls).__new__(cls)
-        return instance
+        return super(NodeMixin, cls).__new__(cls)
 
     def __init__(self, name, parent=None, children=None):
         super(MyNode, self).__init__()
@@ -329,8 +328,7 @@ class MyMapping(NodeMixin, Mapping):
         """ Iterate over all children recursively. """
         for child in self.children:
             yield child
-            for item in child:
-                yield item
+            yield from child
 
     def __len__(self):
         """ Total number of children. """

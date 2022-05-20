@@ -158,7 +158,7 @@ class NodeMixin(object):
         if parent is not None:
             self._pre_attach(parent)
             parentchildren = parent.__children_or_empty
-            assert not any(child is self for child in parentchildren), "Tree is corrupt."  # pragma: no cover
+            assert all(child is not self for child in parentchildren), "Tree is corrupt."
             # ATOMIC START
             parentchildren.append(self)
             self.__parent = parent
@@ -346,9 +346,7 @@ class NodeMixin(object):
         >>> lian.ancestors
         (Node('/Udo'), Node('/Udo/Marc'))
         """
-        if self.parent is None:
-            return tuple()
-        return self.parent.path
+        return tuple() if self.parent is None else self.parent.path
 
     @property
     def anchestors(self):
@@ -498,8 +496,7 @@ class NodeMixin(object):
         >>> lian.height
         0
         """
-        children = self.__children_or_empty
-        if children:
+        if children := self.__children_or_empty:
             return max(child.height for child in children) + 1
         else:
             return 0

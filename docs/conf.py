@@ -212,7 +212,7 @@ html_static_path = ["static"]
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = '%sdoc' % name
+htmlhelp_basename = f'{name}doc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -233,10 +233,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (master_doc, '%s.tex' % name, description,
-     author, 'manual'),
-]
+latex_documents = [(master_doc, f'{name}.tex', description, author, 'manual')]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.

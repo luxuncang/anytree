@@ -27,7 +27,7 @@ def commonancestors(*nodes):
     common = []
     for parentnodes in zip(*ancestors):
         parentnode = parentnodes[0]
-        if all([parentnode is p for p in parentnodes[1:]]):
+        if all(parentnode is p for p in parentnodes[1:]):
             common.append(parentnode)
         else:
             break
@@ -50,15 +50,10 @@ def leftsibling(node):
     >>> leftsibling(joe)
     Node('/Dan/Jan')
     """
-    if node.parent:
-        pchildren = node.parent.children
-        idx = pchildren.index(node)
-        if idx:
-            return pchildren[idx - 1]
-        else:
-            return None
-    else:
+    if not node.parent:
         return None
+    pchildren = node.parent.children
+    return pchildren[idx - 1] if (idx := pchildren.index(node)) else None
 
 
 def rightsibling(node):
@@ -77,12 +72,11 @@ def rightsibling(node):
     Node('/Dan/Joe')
     >>> rightsibling(joe)
     """
-    if node.parent:
-        pchildren = node.parent.children
-        idx = pchildren.index(node)
-        try:
-            return pchildren[idx + 1]
-        except IndexError:
-            return None
-    else:
+    if not node.parent:
+        return None
+    pchildren = node.parent.children
+    idx = pchildren.index(node)
+    try:
+        return pchildren[idx + 1]
+    except IndexError:
         return None

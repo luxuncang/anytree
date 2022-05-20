@@ -238,5 +238,5 @@ class CountError(RuntimeError):
     def __init__(self, msg, result):
         """Error raised on `mincount` or `maxcount` mismatch."""
         if result:
-            msg += " " + repr(result)
+            msg += f" {repr(result)}"
         super(CountError, self).__init__(msg)

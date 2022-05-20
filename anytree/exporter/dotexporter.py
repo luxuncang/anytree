@@ -194,25 +194,21 @@ class DotExporter(object):
 
     def __iter(self, indent, nodenamefunc, nodeattrfunc, edgeattrfunc, edgetypefunc):
         yield "{self.graph} {self.name} {{".format(self=self)
-        for option in self.__iter_options(indent):
-            yield option
-        for node in self.__iter_nodes(indent, nodenamefunc, nodeattrfunc):
-            yield node
-        for edge in self.__iter_edges(indent, nodenamefunc, edgeattrfunc, edgetypefunc):
-            yield edge
+        yield from self.__iter_options(indent)
+        yield from self.__iter_nodes(indent, nodenamefunc, nodeattrfunc)
+        yield from self.__iter_edges(indent, nodenamefunc, edgeattrfunc, edgetypefunc)
         yield "}"
 
     def __iter_options(self, indent):
-        options = self.options
-        if options:
+        if options := self.options:
             for option in options:
-                yield "%s%s" % (indent, option)
+                yield f"{indent}{option}"
 
     def __iter_nodes(self, indent, nodenamefunc, nodeattrfunc):
         for node in PreOrderIter(self.node, maxlevel=self.maxlevel):
             nodename = nodenamefunc(node)
             nodeattr = nodeattrfunc(node)
-            nodeattr = " [%s]" % nodeattr if nodeattr is not None else ""
+            nodeattr = f" [{nodeattr}]" if nodeattr is not None else ""
             yield '%s"%s"%s;' % (indent, DotExporter.esc(nodename), nodeattr)
 
     def __iter_edges(self, indent, nodenamefunc, edgeattrfunc, edgetypefunc):
@@ -223,7 +219,7 @@ class DotExporter(object):
                 childname = nodenamefunc(child)
                 edgeattr = edgeattrfunc(node, child)
                 edgetype = edgetypefunc(node, child)
-                edgeattr = " [%s]" % edgeattr if edgeattr is not None else ""
+                edgeattr = f" [{edgeattr}]" if edgeattr is not None else ""
                 yield '%s"%s" %s "%s"%s;' % (indent, DotExporter.esc(nodename), edgetype,
                                              DotExporter.esc(childname), edgeattr)
 
@@ -273,7 +269,7 @@ class DotExporter(object):
         try:
             remove(dotfilename)
         except Exception:  # pragma: no cover
-            msg = 'Could not remove temporary file %s' % dotfilename
+            msg = f'Could not remove temporary file {dotfilename}'
             logging.getLogger(__name__).warn(msg)
 
     @staticmethod

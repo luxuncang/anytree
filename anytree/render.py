@@ -47,7 +47,7 @@ class AbstractStyle(object):
 
     def __repr__(self):
         classname = self.__class__.__name__
-        return "%s()" % classname
+        return f"{classname}()"
 
 
 class AsciiStyle(AbstractStyle):
@@ -284,20 +284,18 @@ class RenderTree(object):
         if children and (self.maxlevel is None or level < self.maxlevel):
             children = self.childiter(children)
             for child, is_last in _is_last(children):
-                for grandchild in self.__next(child, continues + (not is_last, ), level=level):
-                    yield grandchild
+                yield from self.__next(child, continues + (not is_last, ), level=level)
 
     @staticmethod
     def __item(node, continues, style):
         if not continues:
             return Row(u'', u'', node)
-        else:
-            items = [style.vertical if cont else style.empty for cont in continues]
-            indent = ''.join(items[:-1])
-            branch = style.cont if continues[-1] else style.end
-            pre = indent + branch
-            fill = ''.join(items)
-            return Row(pre, fill, node)
+        items = [style.vertical if cont else style.empty for cont in continues]
+        indent = ''.join(items[:-1])
+        branch = style.cont if continues[-1] else style.end
+        pre = indent + branch
+        fill = ''.join(items)
+        return Row(pre, fill, node)
 
     def __str__(self):
         lines = ["%s%r" % (pre, node) for pre, _, node in self]
@@ -305,10 +303,13 @@ class RenderTree(object):
 
     def __repr__(self):
         classname = self.__class__.__name__
-        args = [repr(self.node),
-                "style=%s" % repr(self.style),
-                "childiter=%s" % repr(self.childiter)]
-        return "%s(%s)" % (classname, ", ".join(args))
+        args = [
+            repr(self.node),
+            f"style={repr(self.style)}",
+            f"childiter={repr(self.childiter)}",
+        ]
+
+        return f'{classname}({", ".join(args)})'
 
     def by_attr(self, attrname="name"):
         u"""
@@ -339,13 +340,10 @@ class RenderTree(object):
         def get():
             for pre, fill, node in self:
                 attr = attrname(node) if callable(attrname) else getattr(node, attrname, "")
-                if isinstance(attr, (list, tuple)):
-                    lines = attr
-                else:
-                    lines = str(attr).split("\n")
-                yield u"%s%s" % (pre, lines[0])
+                lines = attr if isinstance(attr, (list, tuple)) else str(attr).split("\n")
+                yield f"{pre}{lines[0]}"
                 for line in lines[1:]:
-                    yield u"%s%s" % (fill, line)
+                    yield f"{fill}{line}"
 
         return "\n".join(get())
 

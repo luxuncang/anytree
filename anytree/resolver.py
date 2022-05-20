@@ -101,9 +101,7 @@ class Resolver(object):
                 if parent is None:
                     raise RootResolverError(node)
                 node = parent
-            elif part in ("", "."):
-                pass
-            else:
+            elif part not in ("", "."):
                 node = self.__get(node, part)
         return node
 
@@ -260,10 +258,7 @@ class Resolver(object):
         return re_pat.match(name) is not None
 
     def __cmp(self, name, pat):
-        if self.ignorecase:
-            return name.upper() == pat.upper()
-        else:
-            return name == pat
+        return name.upper() == pat.upper() if self.ignorecase else name == pat
 
     @staticmethod
     def __translate(pat):
@@ -275,7 +270,7 @@ class Resolver(object):
                 re_pat += "."
             else:
                 re_pat += re.escape(char)
-        return r'(?ms)' + re_pat + r'\Z'
+        return f'(?ms){re_pat}' + r'\Z'
 
 
 class ResolverError(RuntimeError):
@@ -292,7 +287,7 @@ class RootResolverError(ResolverError):
     def __init__(self, root):
         """Root Resolve Error, cannot go above root node."""
         msg = "Cannot go above root node %r"
-        msg = msg % (root, )
+        msg %= (root, )
         super(ResolverError, self).__init__(msg)
 
 
@@ -302,7 +297,7 @@ class ChildResolverError(ResolverError):
         """Child Resolve Error at `node` handling `child`."""
         names = [repr(_getattr(c, pathattr)) for c in node.children]
         msg = "%r has no child %s. Children are: %s."
-        msg = msg % (node, child, ", ".join(names))
+        msg %= (node, child, ", ".join(names))
         super(ChildResolverError, self).__init__(node, child, msg)
 
 

@@ -31,21 +31,21 @@ def test_parent_child():
     s1ca = Node("sub1Ca", parent=s1c)
 
     eq_(root.parent, None)
-    eq_(root.children, tuple([s0, s1]))
+    eq_(root.children, (s0, s1))
     eq_(s0.parent, root)
-    eq_(s0.children, tuple([s0b, s0a]))
+    eq_(s0.children, (s0b, s0a))
     eq_(s0b.parent, s0)
     eq_(s0b.children, tuple())
     eq_(s0a.parent, s0)
     eq_(s0a.children, tuple())
     eq_(s1.parent, root)
-    eq_(s1.children, tuple([s1a, s1b, s1c]))
+    eq_(s1.children, (s1a, s1b, s1c))
     eq_(s1a.parent, s1)
     eq_(s1a.children, tuple())
     eq_(s1b.parent, s1)
     eq_(s1b.children, tuple())
     eq_(s1c.parent, s1)
-    eq_(s1c.children, tuple([s1ca]))
+    eq_(s1c.children, (s1ca, ))
     eq_(s1ca.parent, s1c)
     eq_(s1ca.children, tuple())
 
@@ -53,15 +53,15 @@ def test_parent_child():
     s1ca.parent = s0
 
     eq_(root.parent, None)
-    eq_(root.children, tuple([s0, s1]))
+    eq_(root.children, (s0, s1))
     eq_(s0.parent, root)
-    eq_(s0.children, tuple([s0b, s0a, s1ca]))
+    eq_(s0.children, (s0b, s0a, s1ca))
     eq_(s0b.parent, s0)
     eq_(s0b.children, tuple())
     eq_(s0a.parent, s0)
     eq_(s0a.children, tuple())
     eq_(s1.parent, root)
-    eq_(s1.children, tuple([s1a, s1b, s1c]))
+    eq_(s1.children, (s1a, s1b, s1c))
     eq_(s1a.parent, s1)
     eq_(s1a.children, tuple())
     eq_(s1b.parent, s1)
@@ -75,15 +75,15 @@ def test_parent_child():
     s1.parent = None
 
     eq_(root.parent, None)
-    eq_(root.children, tuple([s0]))
+    eq_(root.children, (s0, ))
     eq_(s0.parent, root)
-    eq_(s0.children, tuple([s0b, s0a, s1ca]))
+    eq_(s0.children, (s0b, s0a, s1ca))
     eq_(s0b.parent, s0)
     eq_(s0b.children, tuple())
     eq_(s0a.parent, s0)
     eq_(s0a.children, tuple())
     eq_(s1.parent, None)
-    eq_(s1.children, tuple([s1a, s1b, s1c]))
+    eq_(s1.children, (s1a, s1b, s1c))
     eq_(s1a.parent, s1)
     eq_(s1a.children, tuple())
     eq_(s1b.parent, s1)
@@ -97,15 +97,15 @@ def test_parent_child():
     s1b.parent = s1
 
     eq_(root.parent, None)
-    eq_(root.children, tuple([s0]))
+    eq_(root.children, (s0, ))
     eq_(s0.parent, root)
-    eq_(s0.children, tuple([s0b, s0a, s1ca]))
+    eq_(s0.children, (s0b, s0a, s1ca))
     eq_(s0b.parent, s0)
     eq_(s0b.children, tuple())
     eq_(s0a.parent, s0)
     eq_(s0a.children, tuple())
     eq_(s1.parent, None)
-    eq_(s1.children, tuple([s1a, s1b, s1c]))
+    eq_(s1.children, (s1a, s1b, s1c))
     eq_(s1a.parent, s1)
     eq_(s1a.children, tuple())
     eq_(s1b.parent, s1)
@@ -260,12 +260,12 @@ def test_ancestors():
     s1ca = Node("sub1Ca", parent=s1c)
 
     eq_(root.ancestors, tuple())
-    eq_(s0.ancestors, tuple([root]))
-    eq_(s0b.ancestors, tuple([root, s0]))
-    eq_(s0a.ancestors, tuple([root, s0]))
-    eq_(s1ca.ancestors, tuple([root, s1, s1c]))
+    eq_(s0.ancestors, (root, ))
+    eq_(s0b.ancestors, (root, s0))
+    eq_(s0a.ancestors, (root, s0))
+    eq_(s1ca.ancestors, (root, s1, s1c))
     # deprecated typo
-    eq_(s1ca.anchestors, tuple([root, s1, s1c]))
+    eq_(s1ca.anchestors, (root, s1, s1c))
 
 
 def test_node_children_init():
@@ -302,9 +302,9 @@ def test_descendants():
     s1c = Node("sub1C", parent=s1)
     s1ca = Node("sub1Ca", parent=s1c)
 
-    eq_(root.descendants, tuple([s0, s0b, s0a, s1, s1c, s1ca]))
-    eq_(s1.descendants, tuple([s1c, s1ca]))
-    eq_(s1c.descendants, tuple([s1ca]))
+    eq_(root.descendants, (s0, s0b, s0a, s1, s1c, s1ca))
+    eq_(s1.descendants, (s1c, s1ca))
+    eq_(s1c.descendants, (s1ca, ))
     eq_(s1ca.descendants, tuple())
 
 
@@ -338,10 +338,10 @@ def test_siblings():
     s1ca = Node("sub1Ca", parent=s1c)
 
     eq_(root.siblings, tuple())
-    eq_(s0.siblings, tuple([s1]))
-    eq_(s0b.siblings, tuple([s0a]))
-    eq_(s0a.siblings, tuple([s0b]))
-    eq_(s1.siblings, tuple([s0]))
+    eq_(s0.siblings, (s1, ))
+    eq_(s0b.siblings, (s0a, ))
+    eq_(s0a.siblings, (s0b, ))
+    eq_(s1.siblings, (s0, ))
     eq_(s1c.siblings, tuple())
     eq_(s1ca.siblings, tuple())
 
@@ -375,13 +375,13 @@ def test_leaves():
     s1c = Node("sub1C", parent=s1)
     s1ca = Node("sub1Ca", parent=s1c)
 
-    eq_(root.leaves, tuple([s0b, s0a, s1ca]))
-    eq_(s0.leaves, tuple([s0b, s0a]))
-    eq_(s0b.leaves, tuple([s0b]))
-    eq_(s0a.leaves, tuple([s0a]))
-    eq_(s1.leaves, tuple([s1ca]))
-    eq_(s1c.leaves, tuple([s1ca]))
-    eq_(s1ca.leaves, tuple([s1ca]))
+    eq_(root.leaves, (s0b, s0a, s1ca))
+    eq_(s0.leaves, (s0b, s0a))
+    eq_(s0b.leaves, (s0b, ))
+    eq_(s0a.leaves, (s0a, ))
+    eq_(s1.leaves, (s1ca, ))
+    eq_(s1c.leaves, (s1ca, ))
+    eq_(s1ca.leaves, (s1ca, ))
 
 
 def test_is_root():

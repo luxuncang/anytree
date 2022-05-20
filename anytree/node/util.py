@@ -6,4 +6,4 @@ def _repr(node, args=None, nameblacklist=None):
                              sorted(node.__dict__.items(),
                                     key=lambda item: item[0])):
         args.append("%s=%r" % (key, value))
-    return "%s(%s)" % (classname, ", ".join(args))
+    return f'{classname}({", ".join(args)})'
